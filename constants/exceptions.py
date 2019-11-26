@@ -70,9 +70,6 @@ class messageTooLongException(Exception):
 class userSilencedException(Exception):
 	pass
 
-class need2FAException(Exception):
-	pass
-
 class userRestrictedException(Exception):
 	pass
 

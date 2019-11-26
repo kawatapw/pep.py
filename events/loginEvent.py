@@ -66,11 +66,6 @@ def handle(tornadoRequest):
 		if userUtils.isLocked(userID) and priv & privileges.USER_PENDING_VERIFICATION == 0:
 			raise exceptions.loginLockedException()
 
-		# 2FA check
-		if userUtils.check2FA(userID, requestIP):
-			log.warning("Need 2FA check for user {}".format(loginData[0]))
-			raise exceptions.need2FAException()
-
 		# No login errors!
 
 		# Verify this user (if pending activation)
@@ -117,10 +112,6 @@ def handle(tornadoRequest):
 				expireDays = round((expireDate-int(time.time()))/86400)
 				expireIn = "{} days".format(expireDays) if expireDays > 1 else "less than 24 hours"
 				responseToken.enqueue(serverPackets.notification("Your donor tag expires in {}! When your donor tag expires, you won't have any of the donor privileges, like yellow username, custom badge and discord custom role and username color! If you wish to keep supporting Ripple and you don't want to lose your donor privileges, you can donate again by clicking on 'Support us' on Ripple's website.".format(expireIn)))
-
-		# Deprecate telegram 2fa and send alert
-		if userUtils.deprecateTelegram2Fa(userID):
-			responseToken.enqueue(serverPackets.notification("As stated on our blog, Telegram 2FA has been deprecated on 29th June 2018. Telegram 2FA has just been disabled from your account. If you want to keep your account secure with 2FA, please enable TOTP-based 2FA from our website https://ripple.moe. Thank you for your patience."))
 
 		# Set silence end UNIX time in token
 		responseToken.silenceEndTime = userUtils.getSilenceEnd(userID)
@@ -247,9 +238,6 @@ def handle(tornadoRequest):
 		# Bancho is restarting
 		responseData += serverPackets.notification("Bancho is restarting. Try again in a few minutes.")
 		responseData += serverPackets.loginFailed()
-	except exceptions.need2FAException:
-		# User tried to log in from unknown IP
-		responseData += serverPackets.needVerification()
 	except exceptions.haxException:
 		# Using oldoldold client, we don't have client data. Force update.
 		# (we don't use enqueue because we don't have a token since login has failed)

@@ -425,32 +425,6 @@ def checkBanchoSession(userID, ip=""):
 	else:
 		return glob.redis.exists("peppy:sessions:{}".format(userID))
 
-def is2FAEnabled(userID):
-	"""
-	Returns True if 2FA/Google auth 2FA is enable for `userID`
-
-	:userID: user ID
-	:return: True if 2fa is enabled, else False
-	"""
-	return glob.db.fetch("SELECT 2fa_totp.userid FROM 2fa_totp WHERE userid = %(userid)s AND enabled = 1 LIMIT 1", {
-		"userid": userID
-	}) is not None
-
-def check2FA(userID, ip):
-	"""
-	Returns True if this IP is untrusted.
-	Returns always False if 2fa is not enabled on `userID`
-
-	:param userID: user id
-	:param ip: IP address
-	:return: True if untrusted, False if trusted or 2fa is disabled.
-	"""
-	if not is2FAEnabled(userID):
-		return False
-
-	result = glob.db.fetch("SELECT id FROM ip_user WHERE userid = %s AND ip = %s", [userID, ip])
-	return True if result is None else False
-
 def isAllowed(userID):
 	"""
 	Check if userID is not banned or restricted
@@ -1102,26 +1076,6 @@ def removeFromLeaderboard(userID):
 		glob.redis.zrem("ripple:leaderboard:{}".format(mode), str(userID))
 		if country is not None and len(country) > 0 and country != "xx":
 			glob.redis.zrem("ripple:leaderboard:{}:{}".format(mode, country), str(userID))
-
-def deprecateTelegram2Fa(userID):
-	"""
-	Checks whether the user has enabled telegram 2fa on his account.
-	If so, disables 2fa and returns True.
-	If not, return False.
-
-	:param userID: id of the user
-	:return: True if 2fa has been disabled from the account otherwise False
-	"""
-	try:
-		telegram2Fa = glob.db.fetch("SELECT id FROM 2fa_telegram WHERE userid = %s LIMIT 1", (userID,))
-	except ProgrammingError:
-		# The table doesnt exist
-		return False
-
-	if telegram2Fa is not None:
-		glob.db.execute("DELETE FROM 2fa_telegram WHERE userid = %s LIMIT 1", (userID,))
-		return True
-	return False
 
 def unlockAchievement(userID, achievementID):
 	glob.db.execute("INSERT INTO users_achievements (user_id, achievement_id, `time`) VALUES"
