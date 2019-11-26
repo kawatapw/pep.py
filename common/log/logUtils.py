@@ -9,17 +9,13 @@ import os
 
 ENDL = "\n" if os.name == "posix" else "\r\n"
 
-def logMessage(message, alertType = "INFO", messageColor = bcolors.ENDC, discord = None, alertDev = False, of = None, stdout = True):
+def logMessage(message, alertType = "INFO", messageColor = bcolors.ENDC, of = None, stdout = True):
 	"""
 	Log a message
 
 	:param message: message to log
 	:param alertType: alert type string. Can be INFO, WARNING, ERROR or DEBUG. Default: INFO
 	:param messageColor: message console ANSI color. Default: no color
-	:param discord: Discord channel acronym for Schiavo. If None, don't log to Discord. Default: None
-	:param alertDev: 	if True, developers will be highlighted on Discord.
-						Obviously works only if the message will be logged to Discord.
-						Default: False
 	:param of:	Output file name (inside .data folder). If None, don't log to file. Default: None
 	:param stdout: If True, log to stdout (print). Default: True
 	:return:
@@ -56,59 +52,36 @@ def logMessage(message, alertType = "INFO", messageColor = bcolors.ENDC, discord
 		print(finalMessageConsole)
 		sys.stdout.flush()
 
-	# Log to discord if needed
-	if discord is not None:
-		if discord == "bunker":
-			glob.schiavo.sendConfidential(message, alertDev)
-		elif discord == "cm":
-			glob.schiavo.sendCM(message)
-		elif discord == "staff":
-			glob.schiavo.sendStaff(message)
-		elif discord == "general":
-			glob.schiavo.sendGeneral(message)
-
 	# Log to file if needed
 	if of is not None:
 		glob.fileBuffers.write(".data/"+of, finalMessage+ENDL)
 
-def warning(message, discord = None, alertDev = False):
+def warning(message):
 	"""
-	Log a warning to stdout and optionally to Discord
+	Log a warning to stdout
 
 	:param message: warning message
-	:param discord: Discord channel acronym for Schiavo. If None, don't log to Discord. Default: None
-	:param alertDev: 	if True, developers will be highlighted on Discord.
-						Obviously works only if the message will be logged to Discord.
-						Default: False
 	:return:
 	"""
-	logMessage(message, "WARNING", bcolors.YELLOW, discord, alertDev)
+	logMessage(message, "WARNING", bcolors.YELLOW)
 
-def error(message, discord = None, alertDev = True):
+def error(message):
 	"""
-	Log a warning message to stdout and optionally to Discord
+	Log a warning message to stdout
 
 	:param message: warning message
-	:param discord: Discord channel acronym for Schiavo. If None, don't log to Discord. Default: None
-	:param alertDev: 	if True, developers will be highlighted on Discord.
-						Obviously works only if the message will be logged to Discord.
-						Default: False
 	:return:
 	"""
-	logMessage(message, "ERROR", bcolors.RED, discord, alertDev)
+	logMessage(message, "ERROR", bcolors.RED)
 
-def info(message, discord = None, alertDev = False):
+def info(message):
 	"""
-	Log an info message to stdout and optionally to Discord
+	Log an info message to stdout
 
 	:param message: info message
-	:param discord: Discord channel acronym for Schiavo. If None, don't log to Discord. Default: None
-	:param alertDev: 	if True, developers will be highlighted on Discord.
-						Obviously works only if the message will be logged to Discord.
-						Default: False
 	:return:
 	"""
-	logMessage(message, "INFO", bcolors.ENDC, discord, alertDev)
+	logMessage(message, "INFO", bcolors.ENDC)
 
 def debug(message):
 	"""
@@ -139,16 +112,15 @@ def pm(message):
 	"""
 	logMessage(message, "CHAT", bcolors.BLUE)
 
-def rap(userID, message, discord=False, through="FokaBot"):
+def rap(userID, message):
 	"""
 	Log a message to Admin Logs.
 
 	:param userID: admin user ID
 	:param message: message content, without username
-	:param discord: if True, send the message to discord
 	:param through: through string. Default: FokaBot
 	:return:
 	"""
 	glob.db.execute("INSERT INTO rap_logs (id, userid, text, datetime, through) VALUES (NULL, %s, %s, %s, %s)", [userID, message, int(time.time()), through])
 	username = userUtils.getUsername(userID)
-	logMessage("{} {}".format(username, message), discord=discord)
+	logMessage("{} {}".format(username, message))

@@ -15,7 +15,6 @@ from common.db import dbConnector
 from common.ddog import datadogClient
 from common.log import logUtils as log
 from common.redis import pubSub
-from common.web import schiavo
 from handlers import apiFokabotMessageHandler
 from handlers import apiIsOnlineHandler
 from handlers import apiOnlineUsersHandler
@@ -200,12 +199,6 @@ if __name__ == "__main__":
 		if not glob.localize:
 			consoleHelper.printColored("[!] Warning! Users localization is disabled!", bcolors.YELLOW)
 
-		# Discord
-		if generalUtils.stringToBool(glob.conf.config["discord"]["enable"]):
-			glob.schiavo = schiavo.schiavo(glob.conf.config["discord"]["boturl"], "**pep.py**")
-		else:
-			consoleHelper.printColored("[!] Warning! Discord logging is disabled!", bcolors.YELLOW)
-
 		# Gzip
 		glob.gzip = generalUtils.stringToBool(glob.conf.config["server"]["gzip"])
 		glob.gziplevel = int(glob.conf.config["server"]["gziplevel"])
@@ -267,7 +260,7 @@ if __name__ == "__main__":
 				ircPort = int(glob.conf.config["irc"]["port"])
 			except ValueError:
 				consoleHelper.printColored("[!] Invalid IRC port! Please check your config.ini and run the server again", bcolors.RED)
-			log.logMessage("IRC server started!", discord="bunker", of="info.txt", stdout=False)
+			log.logMessage("IRC server started!", of="info.txt", stdout=False)
 			consoleHelper.printColored("> IRC server listening on 127.0.0.1:{}...".format(ircPort), bcolors.GREEN)
 			threading.Thread(target=lambda: ircserver.main(port=ircPort)).start()
 		else:
@@ -281,7 +274,7 @@ if __name__ == "__main__":
 			consoleHelper.printColored("[!] Invalid server port! Please check your config.ini and run the server again", bcolors.RED)
 
 		# Server start message and console output
-		log.logMessage("Server started!", discord="bunker", of="info.txt", stdout=False)
+		log.logMessage("Server started!", of="info.txt", stdout=False)
 		consoleHelper.printColored("> Tornado listening for HTTP(s) clients on 127.0.0.1:{}...".format(serverPort), bcolors.GREEN)
 
 		# Connect to pubsub channels

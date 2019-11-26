@@ -7,7 +7,6 @@ from objects import channelList
 from objects import matchList
 from objects import streamList
 from objects import tokenList
-from common.web import schiavo
 
 try:
 	with open("version") as f:
@@ -28,7 +27,6 @@ channels = channelList.channelList()
 matches = matchList.matchList()
 fLocks = fileLocks.fileLocks()
 fileBuffers = fileBuffer.buffersList()
-schiavo = schiavo.schiavo()
 dog = datadogClient.datadogClient()
 verifiedCache = {}
 chatFilters = None

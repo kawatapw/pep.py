@@ -761,9 +761,9 @@ def report(fro, chan, message):
 		msg = "You've reported {target} for {reason}{info}. A Community Manager will check your report as soon as possible. Every !report message you may see in chat wasn't sent to anyone, so nobody in chat, but admins, know about your report. Thank you for reporting!".format(target=target, reason=reason, info="" if additionalInfo is None else " (" + additionalInfo + ")")
 		adminMsg = "{user} has reported {target} for {reason} ({info})".format(user=fro, target=target, reason=reason, info=additionalInfo)
 
-		# Log report in #admin and on discord
+		# Log report in #admin
 		chat.sendMessage("FokaBot", "#admin", adminMsg)
-		log.warning(adminMsg, discord="cm")
+		log.warning(adminMsg)
 	except exceptions.invalidUserException:
 		msg = "Hello, FokaBot here! You can't report me. I won't forget what you've tried to do. Watch out."
 	except exceptions.invalidArgumentsException:

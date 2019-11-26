@@ -72,10 +72,6 @@ class config:
 			parsedConfig.get("sentry", "banchodsn")
 			parsedConfig.get("sentry", "ircdsn")
 
-			parsedConfig.get("discord", "enable")
-			parsedConfig.get("discord", "boturl")
-			parsedConfig.get("discord", "devgroup")
-
 			parsedConfig.get("datadog", "enable")
 			parsedConfig.get("datadog", "apikey")
 			parsedConfig.get("datadog", "appkey")
@@ -136,11 +132,6 @@ class config:
 		self.config.set("sentry", "enable", "0")
 		self.config.set("sentry", "banchodsn", "")
 		self.config.set("sentry", "ircdsn", "")
-
-		self.config.add_section("discord")
-		self.config.set("discord", "enable", "0")
-		self.config.set("discord", "boturl", "")
-		self.config.set("discord", "devgroup", "")
 
 		self.config.add_section("datadog")
 		self.config.set("datadog", "enable", "0")

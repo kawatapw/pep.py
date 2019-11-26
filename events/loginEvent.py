@@ -258,9 +258,9 @@ def handle(tornadoRequest):
 	except:
 		log.error("Unknown error!\n```\n{}\n{}```".format(sys.exc_info(), traceback.format_exc()))
 	finally:
-		# Console and discord log
+		# Console log
 		if len(loginData) < 3:
-			log.info("Invalid bancho login request from **{}** (insufficient POST data)".format(requestIP), "bunker")
+			log.info("Invalid bancho login request from **{}** (insufficient POST data)".format(requestIP))
 
 		# Return token string and data
 		return responseTokenString, responseData

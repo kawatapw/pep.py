@@ -292,10 +292,9 @@ def sendMessage(fro = "", to = "", message = "", token = None, toIRC = True):
 			if fokaMessage:
 				sendMessage("FokaBot", to if isChannel else fro, fokaMessage)
 
-		# File and discord logs (public chat only)
+		# File logs (public chat only)
 		if to.startswith("#") and not (message.startswith("\x01ACTION is playing") and to.startswith("#spect_")):
 			log.chat("{fro} @ {to}: {message}".format(fro=token.username, to=to, message=message.encode("latin-1").decode("utf-8")))
-			glob.schiavo.sendChatlog("**{fro} @ {to}:** {message}".format(fro=token.username, to=to, message=message.encode("latin-1").decode("utf-8")))
 		return 0
 	except exceptions.userSilencedException:
 		token.enqueue(serverPackets.silenceEndTime(token.getSilenceSecondsLeft()))
