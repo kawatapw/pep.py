@@ -52,16 +52,13 @@ def instantRestart(fro, chan, message):
 def faq(fro, chan, message):
 	# TODO: Unhardcode this
 	messages = {
-		"rules": "Please make sure to check (Ripple's rules)[https://ripple.moe/doc/rules].",
+		"rules": "Please make sure to check (Kawata's rules)[https://kawata.pw/doc/rules].",
 		"swearing": "Please don't abuse swearing",
 		"spam": "Please don't spam",
 		"offend": "Please don't offend other players",
-		"github": "(Ripple's Github page!)[https://github.com/osuripple/ripple]",
-		"discord": "(Join Ripple's Discord!)[https://discord.gg/0rJcZruIsA6rXuIx]",
-		"blog": "You can find the latest Ripple news on the (blog)[https://blog.ripple.moe]!",
-		"changelog": "Check the (changelog)[https://ripple.moe/changelog] !",
-		"status": "Check the server status (here!)[https://status.ripple.moe]",
-		"english": "Please keep this channel in english.",
+		"github": "(Kawata's GitHub page!)[https://github.com/kawatapw]",
+		"discord": "(Join Kawata's Discord!)[https://discord.gg/4CzsqkK]",
+		"english": "Please keep this channel in English.",
 		"topic": "Can you please drop the topic and talk about something else?",
 		"lines": "Please try to keep your sentences on a single line to avoid getting silenced."
 	}
@@ -1266,7 +1263,7 @@ commands = [
 		"callback": report
 	}, {
 		"trigger": "!help",
-		"response": "Click (here)[https://ripple.moe/index.php?p=16&id=4] for FokaBot's full command list"
+		"response": "Click (here)[https://kawata.pw/doc/fokabot] for FokaBot's full command list"
 	}, #{
 		#"trigger": "!ask",
 		#"syntax": "<question>",
