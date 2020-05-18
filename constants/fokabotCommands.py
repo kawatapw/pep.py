@@ -15,6 +15,7 @@ from common.constants import gameModes
 from common.constants import privileges
 from constants import serverPackets
 from helpers import systemHelper
+from helpers import kawataHelper
 from objects import fokabot
 from objects import glob
 from helpers import chatHelper as chat
@@ -252,6 +253,87 @@ def ban(fro, chan, message):
 	log.rap(userID, "has banned {}".format(target), True)
 	return "RIP {}. You will not be missed.".format(target)
 
+def editMap(fro, chan, message):
+	messages = [m.lower() for m in message]
+	rankType = message[0]
+	mapType = message[1]
+	mapID = message[2]
+
+	# Get persons userID, privileges, and token
+	userID = userUtils.getID(fro)
+	privileges = userUtils.getPrivileges(userID)
+	token = glob.tokens.getTokenFromUserID(userID)
+	name = userUtils.getUsername(userID)
+
+	if chan.startswith('#'):
+		return "Map ranking is not permitted in regular channels, please do so in PMs with FokaBot to prevent chat flooding."
+
+	# Grab beatmapData from db
+	try:
+		beatmapData = glob.db.fetch("SELECT beatmapset_id, song_name, ranked FROM beatmaps WHERE beatmap_id = {} LIMIT 1".format(mapID))
+	except:
+		return "We could not find that beatmap. Perhaps check you are using the BeatmapID (not BeatmapSetID), and typed it correctly."
+
+	if 's' in mapType.lower():
+		mapType = 'set'
+	elif 'd' in mapType.lower() or 'm' in mapType.lower():
+		mapType = 'map'
+	else:
+		return "Please specify whether your request is a single difficulty, or a full set (map/set). Example: '!map unrank/rank/love set/map 256123 mania'."
+
+	# User has AdminManageBeatmaps perm
+	if privileges & 256:
+
+		# Figure out which ranked status we're requesting to
+		if 'r' in rankType.lower() and 'u' not in rankType.lower():
+			rankType = 'rank'
+			rankTypeID = 2
+		elif 'l' in rankType.lower():
+			rankType = 'love'
+			rankTypeID = 5
+		elif 'u' in rankType.lower() or 'g' in rankType.lower():
+			rankType = 'unrank'
+			rankTypeID = 0
+		else:
+			return "Please enter a valid ranked status (rank, love, unrank)."
+		
+		if rankType == "love":
+			status = "loved"
+		elif rankType == "rank":
+			status = "ranked"
+		else:
+			status = "unranked"
+		
+		if beatmapData['ranked'] == rankTypeID:
+			return "This map is already {}".format(status)
+
+		if mapType == 'set':
+			numDiffs = glob.db.fetch("SELECT COUNT(id) FROM beatmaps WHERE beatmapset_id = {}".format(beatmapData["beatmapset_id"]))
+			glob.db.execute("UPDATE beatmaps SET ranked = {} WHERE beatmapset_id = {} LIMIT {}".format(rankTypeID, freezeStatus, beatmapData["beatmapset_id"], numDiffs["COUNT(id)"]))
+		else:
+			glob.db.execute("UPDATE beatmaps SET ranked = {} WHERE beatmap_id = {} LIMIT 1".format(rankTypeID, mapID ))
+
+		# Announce / Log to admin panel logs when ranked status is changed
+		log.rap(userID, "has {} beatmap ({}): {} ({})".format(status, mapType, beatmapData["song_name"], mapID), True)
+		if mapType.lower() == 'set':
+			msg = "{} has {} beatmap set: [https://osu.ppy.sh/s/{} {}]".format(fro, status, beatmapData["beatmapset_id"], beatmapData["song_name"])
+		else:
+			msg = "{} has {} beatmap: [https://osu.ppy.sh/s/{} {}]".format(fro, status, mapID, beatmapData["song_name"])
+
+		chat.sendMessage(glob.BOT_NAME, "#announce", msg)
+		
+		if mapType == "set":
+			webhookdesp = "{} (set) has been {}".format(beatmapData["song_name"], status)
+		else:
+			webhookdesp = "{} has been {}".format(beatmapData["song_name"], status)
+		
+		webhook = kawataHelper.Webhook(glob.conf.config["discord"]["ranked"], color=0xadd8e6, footer="This beatmap was {} on Shibui!".format(status))
+		webhook.set_title(title="New {} map!".format(status), url='https://osu.ppy.sh/s/{}'.format(str(beatmapData["beatmapset_id"])))
+		webhook.set_desc(webhookdesp)
+		webhook.set_image("https://assets.ppy.sh/beatmaps/{}/covers/cover.jpg".format(str(beatmapData["beatmapset_id"])))
+		webhook.post()
+		return msg
+	
 def unban(fro, chan, message):
 	# Get parameters
 	for i in message:
