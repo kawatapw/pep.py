@@ -327,7 +327,7 @@ def editMap(fro, chan, message):
 		else:
 			webhookdesp = "{} has been {}".format(beatmapData["song_name"], status)
 		
-		webhook = kawataHelper.Webhook(glob.conf.config["discord"]["ranked"], color=0xadd8e6, footer="This beatmap was {} on Shibui!".format(status))
+		webhook = kawataHelper.Webhook(glob.conf.config["discord"]["ranked"], color=0xadd8e6, footer="This beatmap was {} on Kawata!".format(status))
 		webhook.set_title(title="New {} map!".format(status), url='https://osu.ppy.sh/s/{}'.format(str(beatmapData["beatmapset_id"])))
 		webhook.set_desc(webhookdesp)
 		webhook.set_image("https://assets.ppy.sh/beatmaps/{}/covers/cover.jpg".format(str(beatmapData["beatmapset_id"])))
