@@ -309,7 +309,7 @@ def editMap(fro, chan, message):
 
 		if mapType == 'set':
 			numDiffs = glob.db.fetch("SELECT COUNT(id) FROM beatmaps WHERE beatmapset_id = {}".format(beatmapData["beatmapset_id"]))
-			glob.db.execute("UPDATE beatmaps SET ranked = {} WHERE beatmapset_id = {} LIMIT {}".format(rankTypeID, freezeStatus, beatmapData["beatmapset_id"], numDiffs["COUNT(id)"]))
+			glob.db.execute("UPDATE beatmaps SET ranked = {} WHERE beatmapset_id = {} LIMIT {}".format(rankTypeID, beatmapData["beatmapset_id"], numDiffs["COUNT(id)"]))
 		else:
 			glob.db.execute("UPDATE beatmaps SET ranked = {} WHERE beatmap_id = {} LIMIT 1".format(rankTypeID, mapID ))
 
