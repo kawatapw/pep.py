@@ -265,9 +265,6 @@ def editMap(fro, chan, message):
 	token = glob.tokens.getTokenFromUserID(userID)
 	name = userUtils.getUsername(userID)
 
-	if chan.startswith('#'):
-		return "Map ranking is not permitted in regular channels, please do so in PMs with FokaBot to prevent chat flooding."
-
 	# Grab beatmapData from db
 	try:
 		beatmapData = glob.db.fetch("SELECT beatmapset_id, song_name, ranked FROM beatmaps WHERE beatmap_id = {} LIMIT 1".format(mapID))
@@ -311,28 +308,16 @@ def editMap(fro, chan, message):
 			numDiffs = glob.db.fetch("SELECT COUNT(id) FROM beatmaps WHERE beatmapset_id = {}".format(beatmapData["beatmapset_id"]))
 			glob.db.execute("UPDATE beatmaps SET ranked = {} WHERE beatmapset_id = {} LIMIT {}".format(rankTypeID, beatmapData["beatmapset_id"], numDiffs["COUNT(id)"]))
 		else:
-			glob.db.execute("UPDATE beatmaps SET ranked = {} WHERE beatmap_id = {} LIMIT 1".format(rankTypeID, mapID ))
+			glob.db.execute("UPDATE beatmaps SET ranked = {} WHERE beatmap_id = {} LIMIT 1".format(rankTypeID, mapID))
 
 		# Announce / Log to admin panel logs when ranked status is changed
 		log.rap(userID, "has {} beatmap ({}): {} ({})".format(status, mapType, beatmapData["song_name"], mapID), True)
-		if mapType.lower() == 'set':
-			msg = "{} has {} beatmap set: [https://osu.ppy.sh/s/{} {}]".format(fro, status, beatmapData["beatmapset_id"], beatmapData["song_name"])
-		else:
-			msg = "{} has {} beatmap: [https://osu.ppy.sh/s/{} {}]".format(fro, status, mapID, beatmapData["song_name"])
-
-		chat.sendMessage(glob.BOT_NAME, "#announce", msg)
-		
-		if mapType == "set":
-			webhookdesp = "{} (set) has been {}".format(beatmapData["song_name"], status)
-		else:
-			webhookdesp = "{} has been {}".format(beatmapData["song_name"], status)
 		
 		webhook = kawataHelper.Webhook(glob.conf.config["discord"]["ranked"], color=0xadd8e6, footer="This beatmap was {} on Kawata!".format(status))
 		webhook.set_title(title="New {} map!".format(status), url='https://osu.ppy.sh/s/{}'.format(str(beatmapData["beatmapset_id"])))
 		webhook.set_desc(webhookdesp)
 		webhook.set_image("https://assets.ppy.sh/beatmaps/{}/covers/cover.jpg".format(str(beatmapData["beatmapset_id"])))
 		webhook.post()
-		return msg
 	
 def unban(fro, chan, message):
 	# Get parameters
