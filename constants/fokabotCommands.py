@@ -1402,6 +1402,11 @@ commands = [
 		"privileges": privileges.ADMIN_BAN_USERS,
 		"callback": ban
 	}, {
+		"trigger": "!map",
+		"syntax": "<ranktype> <maptype> <mapid>",
+		"privileges": privileges.ADMIN_MANAGE_BEATMAPS,
+		"callback": editMap
+	}, {
 		"trigger": "!unban",
 		"syntax": "<target>",
 		"privileges": privileges.ADMIN_BAN_USERS,
