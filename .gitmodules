@@ -1,0 +1,4 @@
+[submodule "common"]
+	path = common
+	url = https://github.com/kawatapw/ripple-python-common
+	branch = pep.py
