@@ -1,3 +1,0 @@
-[submodule "common"]
-	path = common
-	url = https://github.com/kawata-wip/ripple-python-common
