@@ -58,13 +58,13 @@ if userToken.matchID != -1 and userToken.actionID != actions.MULTIPLAYING and us
             userToken.autopiloting = False
             userToken.updateCachedStats()
         # autopiloten
-        elif packetData["actionMods"] & 8192:
+        #elif packetData["actionMods"] & 8192:
             # Only reload on mode change.
-            if not userToken.autopiloting:
-                userToken.updateCachedStats()
-            userToken.autopiloting = True
-            userToken.relaxing = False
-            userToken.updateCachedStats()
+        #    if not userToken.autopiloting:
+        #        userToken.updateCachedStats()
+        #    userToken.autopiloting = True
+        #    userToken.relaxing = False
+        #    userToken.updateCachedStats()
         else:
             if (not userToken.autopiloting) and (not userToken.relaxing):
                 userToken.updateCachedStats()
