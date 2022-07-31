@@ -96,7 +96,7 @@ def insert_ban_log(
         detail = "pep.py Autoban: " + detail
 
     glob.db.execute(
-        "INSERT INTO ban_logs (from_id, to_id, summary, detail) VALUES (%s, %s, %s, %s)",
+        "INSERT INTO rap_logs (from_id, to_id, summary, detail) VALUES (%s, %s, %s, %s)",
         (
             from_id,
             user_id,

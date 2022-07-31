@@ -192,12 +192,12 @@ def log_message_db(fro: UserToken, to_id: Union[int, str], content: str) -> None
     if isinstance(to_id, str):
         # Channel Message.
         glob.db.execute(
-            "INSERT INTO chat_chan_logs (user_id, target_chan, content) VALUES (%s,%s,%s)",
+            "INSERT INTO bancho_private_messages (msg_from_userid, msg_to, msg) VALUES (%s,%s,%s)",
             (fro.userID, to_id, content),
         )
     else:
         glob.db.execute(
-            "INSERT INTO chat_logs (user_id, target_id, content) VALUES (%s,%s,%s)",
+            "INSERT INTO bancho_private_messages (msg_from_userid, msg_to, msg) VALUES (%s,%s,%s)",
             (fro.userID, to_id, content),
         )
 
