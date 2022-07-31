@@ -185,25 +185,6 @@ def partChannel(
     except exceptions.userNotFoundException:
         log.warning("User not connected to IRC/Bancho")
 
-
-def log_message_db(fro: UserToken, to_id: Union[int, str], content: str) -> None:
-    """Logs the message to the database."""
-
-    if isinstance(to_id, str):
-        # Channel Message.
-        glob.db.execute(
-            "INSERT INTO bancho_private_messages (msg_from_userid, msg_to, msg) VALUES (%s,%s,%s)",
-            (fro.userID, to_id, content),
-        )
-    else:
-        glob.db.execute(
-            "INSERT INTO bancho_private_messages (msg_from_userid, msg_to, msg) VALUES (%s,%s,%s)",
-            (fro.userID, to_id, content),
-        )
-
-    redis_notify_new_msg(fro.userID, to_id, content)
-
-
 def redis_notify_new_msg(fro: int, to: Union[int, str], content: str) -> None:
     """Notifies the api of a new message."""
 
@@ -311,18 +292,12 @@ def sendMessage(fro="", to="", message="", token=None, toIRC=True):
 
             # Everything seems fine, build recipients list and send packet
             glob.streams.broadcast(f"chat/{to}", packet, but=[token.token])
-            # Log the message to db and api.
-            # These channels can overlap and overall are meant to be temporary.
-            if toClient not in ("#multiplayer", "#spectator"):
-                log_message_db(token, to, message)
         else:
             # USER
             # Make sure recipient user is connected
             recipientToken = glob.tokens.getTokenFromUsername(to)
             if recipientToken is None:
                 user_id = userUtils.getID(to)
-                if user_id:
-                    log_message_db(token, user_id, message)
                 raise exceptions.userNotFoundException()
 
             # Make sure the recipient is not a tournament client
@@ -345,7 +320,6 @@ def sendMessage(fro="", to="", message="", token=None, toIRC=True):
 
             # Everything seems fine, send packet
             recipientToken.enqueue(packet)
-            log_message_db(token, recipientToken.userID, message)
 
         # Spam protection (ignore the bot)
         if token.userID > 999 or not token.admin:
