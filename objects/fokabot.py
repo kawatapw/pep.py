@@ -23,7 +23,7 @@ def connect():
     glob.BOT_NAME = userUtils.getUsername(999)
     token = glob.tokens.addToken(999)
     token.actionID = actions.WATCHING
-    token.actionText = "over RealistikOsu!"
+    token.actionText = "over Kawata!"
     token.pp = 69
     token.accuracy = 0.69
     token.playcount = 69
@@ -103,7 +103,7 @@ def fokabotResponse(fro, chan, message):
                 f"There was an issue while running '{cmd.trigger}' command. \nTraceback: {tb}",
             )
             resp = [
-                "There was issue while processing your command, please report this to RealistikOsu developer!",
+                "There was issue while processing your command, please report this to a Kawata developer!",
             ]
             # Debugging for staff
             if user.admin:

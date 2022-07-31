@@ -52,7 +52,7 @@ def get_country(user_id: int) -> str:
     """
 
     return glob.db.fetch(
-        "SELECT country FROM users WHERE id = %s LIMIT 1",
+        "SELECT country FROM users_stats WHERE id = %s LIMIT 1",
         (user_id,),
     )["country"]
 
@@ -68,7 +68,7 @@ def set_country(user_id: int, country_code: str) -> None:
     country_code = country_code.upper()
 
     glob.db.execute(
-        "UPDATE users SET country = %s WHERE id = %s LIMIT 1",
+        "UPDATE users_stats SET country = %s WHERE id = %s LIMIT 1",
         (country_code, user_id),
     )
 

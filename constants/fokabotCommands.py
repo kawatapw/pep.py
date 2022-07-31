@@ -32,7 +32,6 @@ from constants import serverPackets
 from constants import slotStatuses
 from helpers import chatHelper as chat
 from helpers import systemHelper
-from helpers.status_helper import UserStatus
 from helpers.user_helper import restrict_with_log
 from helpers.user_helper import username_safe
 from logger import log
@@ -292,11 +291,11 @@ def editMap(fro: str, chan: str, message: list[str]) -> str:
 
     if set_check:  # In theory it should work, practically i have no fucking clue.
         map_name = res["song_name"].split("[")[0].strip()
-        beatmap_url = f"the beatmap set [https://ussr.pl/beatmaps/{token.tillerino[0]} {map_name}]"
+        beatmap_url = f"the beatmap set [https://kawata.pw/beatmaps/{token.tillerino[0]} {map_name}]"
     else:
         map_name = res["song_name"]
         beatmap_url = (
-            f"the beatmap [https://ussr.pl/beatmaps/{token.tillerino[0]} {map_name}]"
+            f"the beatmap [https://kawata.pw/beatmaps/{token.tillerino[0]} {map_name}]"
         )
 
     if conf.NEW_RANKED_WEBHOOK:
@@ -449,7 +448,7 @@ def fokabotReconnect(fro, chan, message):
     """Forces the bot to reconnect."""
     # Check if the bot is already connected
     if glob.tokens.getTokenFromUserID(999) is not None:
-        return f"{glob.BOT_NAME} is already connected to RealistikOsu!"
+        return f"{glob.BOT_NAME} is already connected to Kawata!"
 
     # Bot is not connected, connect it
     fokabot.connect()
@@ -626,90 +625,6 @@ def restrict(fro, chan, message):
     log.rap(userID, f"has put {target} in restricted mode", True)
     return f"Bye bye {target}. See you later, maybe."
 
-
-@registerCommand(
-    trigger="!freeze",
-    syntax="<target>",
-    privs=privileges.ADMIN_MANAGE_USERS,
-)
-def freeze(fro, chan, message):
-    """Freezes a specific user."""
-    target = username_safe(" ".join(message))
-
-    # Make sure the user exists
-    targetUserID = userUtils.getIDSafe(target)
-    userID = userUtils.getID(fro)
-    if not targetUserID:
-        return f"{target}: user not found"
-
-    # Get date & prepare freeze date
-    now = datetime.now()
-    freezedate = now + timedelta(days=2)
-    freezedateunix = (freezedate - datetime(1970, 1, 1)).total_seconds()
-
-    # Set freeze status & date
-    glob.db.execute(
-        f"UPDATE `users`  SET `frozen` = '1' WHERE `id` = '{targetUserID}'",
-    )
-    glob.db.execute(
-        "UPDATE `users`  SET `freezedate` = '{}' WHERE `id` = '{}'".format(
-            freezedateunix,
-            targetUserID,
-        ),
-    )
-
-    targetToken = glob.tokens.getTokenFromUsername(username_safe(target), safe=True)
-    if targetToken is not None:
-        targetToken.enqueue(
-            serverPackets.notification(
-                "You have been frozen! The RealistikOsu staff team has found you suspicious and would like to request a liveplay. Visit ussr.pl for more info.",
-            ),
-        )
-
-    log.rap(userID, f"has frozen {target}", True)
-    return "User has been frozen!"
-
-
-@registerCommand(
-    trigger="!unfreeze",
-    syntax="<target>",
-    privs=privileges.ADMIN_MANAGE_USERS,
-)
-def unfreeze(fro, chan, message):
-    """Unfreezes a specific user."""
-    target = username_safe(" ".join(message))
-
-    # Make sure the user exists
-    targetUserID = userUtils.getIDSafe(target)
-    userID = userUtils.getID(fro)
-    if not targetUserID:
-        return f"{target}: user not found"
-
-    glob.db.execute(
-        f"UPDATE `users`  SET `frozen` = '0' WHERE `id` = '{targetUserID}'",
-    )
-    glob.db.execute(
-        f"UPDATE `users`  SET `freezedate` = '0' WHERE `id` = '{targetUserID}'",
-    )
-    glob.db.execute(
-        "UPDATE users  SET firstloginafterfrozen = '1' WHERE id = '{}'".format(
-            targetUserID,
-        ),
-    )
-    # glob.db.execute(f"INSERT IGNORE INTO user_badges (user, badge) VALUES ({targetUserID}), 1005)")
-
-    targetToken = glob.tokens.getTokenFromUsername(username_safe(target), safe=True)
-    if targetToken is not None:
-        targetToken.enqueue(
-            serverPackets.notification(
-                "Your account has been unfrozen! You have proven your legitemacy. Thank you and have fun playing on RealistikOsu!",
-            ),
-        )
-
-    log.rap(userID, f"has unfrozen {target}", True)
-    return "User has been unfrozen!"
-
-
 @registerCommand(
     trigger="!username",
     syntax="<new username>",
@@ -833,9 +748,9 @@ def systemStatus(fro, chan, message):
 
     msg = "\n".join(
         (
-            "---> RealistikOsu <---",
+            "---> Kawata <---",
             " - Realtime Server -",
-            "> Running RealistikOsu pep.py fork.",
+            "> Running  pep.py fork.",
             f"> Online Users: {data['connectedUsers']}",
             f"> Multiplayer: {data['matches']}",
             f"> Uptime: {data['uptime']}",
@@ -1948,7 +1863,7 @@ def help_cmd(fro, chan, message):
         help_cmd.append(f"{1+idx+(CMD_PER_PAGE*(index-1))}. - {name} - {docstr}")
 
     header = [
-        f"--- {index} of {pages} pages of commands currently available on RealistikOsu! ---",
+        f"--- {index} of {pages} pages of commands currently available on Kawata! ---",
     ]
     if index == 1:
         help_cmd.append(
@@ -1976,37 +1891,3 @@ def syntax(fro, chan, message):
             return f"Syntax: {cmd.trigger} {cmd.syntax or '<No syntax>'}"
 
     return False
-
-
-@registerCommand(trigger="!status", syntax="<status>")
-def status_cmd(fro: str, chan: str, msg: list[str]) -> str:
-    """Sets a status for a user."""
-
-    t_user = glob.tokens.getTokenFromUsername(fro)
-    cur_status = glob.user_statuses.get_status(t_user.userID)
-    msg_has_args = msg != [""]  # I hate this.
-    # They are toggling it.
-    if (not msg_has_args) and cur_status:
-        cur_status.enabled = not cur_status.enabled
-        cur_status.insert()
-        word = "on" if cur_status.enabled else "off"
-        return f"Your status has been toggled {word}!"
-    elif (not msg_has_args) and not cur_status:
-        return (
-            "You may not toggle your status if you do not have one! "
-            "You may create a new one using the command !status <your status>"
-        )
-    new_status = " ".join(msg)
-
-    if (st_len := len(new_status)) > 256:
-        return f"This status is too long! (Max is 256, yours was {st_len})"
-
-    status = UserStatus(
-        id=None,  # Set in insert.
-        user_id=t_user.userID,
-        status=new_status,
-        enabled=True,
-    )
-    status.insert()
-
-    return f"Your status has been set to: {new_status}"

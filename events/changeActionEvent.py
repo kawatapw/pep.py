@@ -81,11 +81,7 @@ if userToken.matchID != -1 and userToken.actionID != actions.MULTIPLAYING and us
     # User Statuses! Apply only on IDLE/AFK
     if userToken.actionID in (0, 1):
         # These should not have actionText
-        status = glob.user_statuses.get_status_if_enabled(userID)
-        if status:
-            userToken.actionText = f"({status.status}) [{prefix}]"
-        else:
-            userToken.actionText = f"[{prefix}]"
+        userToken.actionText = f"[{prefix}]"
     else:
         userToken.actionText = f"[{prefix}] " + packetData["actionText"]
 

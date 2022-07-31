@@ -14,7 +14,6 @@ from common.db import dbConnector
 from common.redis import pubSub
 
 from handlers import api_delta as deltaApi
-from handlers import apiAerisThing
 from handlers import apiFokabotMessageHandler
 from handlers import apiIsOnlineHandler
 from handlers import apiOnlineUsersHandler
@@ -25,7 +24,6 @@ from handlers import ciTriggerHandler
 from handlers import mainHandler
 from helpers import consoleHelper
 from helpers import systemHelper as system
-from helpers.status_helper import StatusManager
 from logger import DEBUG
 from logger import log
 from objects import banchoConfig
@@ -54,7 +52,6 @@ def make_app():
             (r"/api/v1/fokabotMessage", apiFokabotMessageHandler.handler),
             (r"/api/yes/userstats", apiUserStatusHandler.handler),
             (r"/api/v2/clients/(.*)", deltaApi.handler),
-            (r"/infos", apiAerisThing.handler),
         ],
     )
 
@@ -170,18 +167,6 @@ def main():
         log.info("Initializing multiplayer cleanup loop... ")
         glob.matches.cleanupLoop()
         log.info("Complete!")
-
-        try:
-            log.info("Loading user statuses...")
-            st_man = StatusManager()
-            loaded = st_man.load_from_db()
-            glob.user_statuses = st_man
-            log.info(f"Loaded {loaded} user statuses!")
-        except Exception:
-            log.error(
-                "Loading user statuses failed with error:\n" + traceback.format_exc(),
-            )
-            raise
 
         # Debug mode
         glob.debug = DEBUG
