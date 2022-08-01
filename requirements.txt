@@ -10,3 +10,4 @@ raven==6.10.0
 redis==2.10.5
 requests==2.25.1
 tornado==4.4.2
+discord-webhook==0.16.3
