@@ -42,7 +42,7 @@ def handle(userToken, packetData):
             "she so shiny",
             "im a freaking ferrari",
             "Welp shouldnt have bought that switch then",
-            "RealistikBot hot",
+            "FokaBot hot",
         ]
 
         # Set match name

@@ -138,7 +138,7 @@ def main():
             )
 
         # Start fokabot
-        log.info("Connecting RealistikBot...")
+        log.info("Connecting FokaBot...")
         fokabot.connect()
         log.info("Complete!")
 

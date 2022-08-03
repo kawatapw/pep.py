@@ -264,8 +264,10 @@ def handle(tornadoRequest):
         t_str = t.end_time_str()
         online_users = len(glob.tokens.tokens)
         # Me and relesto get a quote because why not.
-        if userID in (1019, 16831):
+        if userID in (2, 16831):
             quote = "What's the cause of dry skin?\nTowels."
+        elif userID == 7856: # hobbit also does :tf:
+            quote = "1MISS-1SCAR"
         else:
             quote = random.choice(glob.banchoConf.config["Quotes"])
         notif = f"""- Online Users: {online_users}\n- {quote}"""

@@ -515,11 +515,6 @@ class Match:
 
         # Set vinse id if needed
         chanName = f"#multi_{self.matchID}"
-        # if self.vinseID is None:
-        # 	self.vinseID = (int(time.time()) // (60 * 15)) << 32 | self.matchID
-        # 	chat.sendMessage(glob.BOT_NAME, chanName, "Match history available [{} here]".format(
-        # 		"https://vinse.ussr.pl/match/{}".format(self.vinseID)
-        # 	))
 
         # Changing this to be a general notice.
         if not self.bloodcatAlert:

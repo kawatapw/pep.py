@@ -70,7 +70,7 @@ def refresh_bmap(md5: str) -> None:
 
 def calc_completion(bmapid, n300, n100, n50, miss):
     bmap = osupyparser.OsuFile(
-        f"/home/realistikosu/ussr/.data/maps/{bmapid}.osu",
+        f"/home/realistikosu/ussr/.data/maps/{bmapid}.osu", # me when the when
     ).parse_file()
 
     total_hits = int(n300 + n100 + n50 + miss)
@@ -303,8 +303,8 @@ def editMap(fro: str, chan: str, message: list[str]) -> str:
         embed = DiscordEmbed(description=f"Ranked by {fro}", color=242424)
         embed.set_author(
             name=f"{map_name} was just {status_readable}",
-            url=f"https://ussr.pl/beatmaps/{token.tillerino[0]}",
-            icon_url=f"https://a.ussr.pl/{token.userID}",
+            url=f"https://kawata.pw/beatmaps/{token.tillerino[0]}",
+            icon_url=f"https://a.kawata.pw/{token.userID}",
         )
         embed.set_footer(text="via RealistikPanel!")
         embed.set_image(
@@ -316,7 +316,7 @@ def editMap(fro: str, chan: str, message: list[str]) -> str:
     chat.sendMessage(
         glob.BOT_NAME,
         "#announce",
-        f"[https://ussr.pl/u/{token.userID} {fro}] has {status_readable} {beatmap_url}",
+        f"[https://kawata.pw/u/{token.userID} {fro}] has {status_readable} {beatmap_url}",
     )
     return f"Successfully {status_readable} a map."
 
@@ -457,10 +457,10 @@ def fokabotReconnect(fro, chan, message):
 
 @registerCommand(trigger="!bot reload", privs=privileges.ADMIN_MANAGE_SERVERS)
 def reload_commands(fro, chan, mes) -> str:
-    """Reloads all of the RealistikBot commands."""
+    """Reloads all of the FokaBot commands."""
 
     fokabot.reload_commands()
-    return "RealistikBot has been reloaded successfully!"
+    return "FokaBot has been reloaded successfully!"
 
 
 @registerCommand(
@@ -971,8 +971,8 @@ def tillerinoLast(fro, chan, message):
     token.tillerino[2] = fc_acc
     oppaiData = getPPMessage(token.userID, just_data=True)
 
-    user_embed = f"[https://ussr.pl/u/{token.userID} {fro}]"
-    map_embed = f"[http://ussr.pl/beatmaps/{data['bid']} {data['sn']}]"
+    user_embed = f"[https://kawata.pw/u/{token.userID} {fro}]"
+    map_embed = f"[http://kawata.pw/beatmaps/{data['bid']} {data['sn']}]"
 
     response = [
         f"{user_embed} | {map_embed} +{generalUtils.readableMods(data['mods'])}",

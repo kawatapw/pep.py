@@ -9,7 +9,7 @@ This portion of the Kawata manages all of the real-time, packet related portions
 - Chat
 - Multiplayer
 - Spectator
-- Server Bot (RealistikBot)
+- Server Bot (FokaBot)
 
 ## Why is our fork better?
 This fork of pep.py has been developed specifically to suit the need of Kawata. With the rapid growth of the server, more and more demand has been placed on us in regards of features alongside performance. The original repo features a large quantity of fatal flaws alongside performance hogs, and through our usage of the software, we have solved a majority of those issues.
