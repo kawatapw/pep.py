@@ -270,7 +270,7 @@ def handle(tornadoRequest):
             quote = "1MISS-1SCAR"
         else:
             # quote = random.choice(glob.banchoConf.config["Quotes"])
-            quote = ("Welcome to Kawata!")
+            quote = "Welcome to Kawata!"
         notif = f"""- Online Users: {online_users}\n- {quote}"""
         if responseToken.admin:
             notif += f"\n- Elapsed: {t_str}!"
