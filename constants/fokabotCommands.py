@@ -1786,13 +1786,31 @@ def troll(fro: str, chan: str, message: str) -> str:
     t_user.enqueue(q)
     return "They have been trolled"
 
+@registerCommand(
+    trigger="!msg",
+    syntax="<target> <message>",
+    privs=privileges.ADMIN_MANAGE_USERS,
+)
+def messageuser(fro: str, chan: str, message: str) -> str:
+    """Send a message from FokaBot."""
+
+    target = username_safe(message[0])
+    t_user = glob.tokens.getTokenFromUsername(target, safe=True)
+
+    if not t_user:
+        return "You can not message a offline user."
+
+    msg = serverPackets.message_notify("FokaBot", t_user.username, " ".join(message[1:]))
+    t_user.enqueue(msg)
+
+    return f"Messaged {t_user.username}."
 
 @registerCommand(trigger="!py", syntax="<code>", privs=privileges.ADMIN_MANAGE_USERS)
 def py(fro: str, chan: str, message: str) -> str:
     """Allows for code execution inside server (DANGEROUS COMMAND)"""
 
     user = glob.tokens.getTokenFromUsername(username_safe(fro), safe=True)
-    if not user.userID in (1000, 1180):
+    if not user.userID in (2, 1000):
         return "This command is reserved for head developers only!"
 
     if not message[0]:
