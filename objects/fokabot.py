@@ -22,12 +22,12 @@ def connect():
     """
     glob.BOT_NAME = userUtils.getUsername(999)
     token = glob.tokens.addToken(999)
-    token.actionID = actions.WATCHING
-    token.actionText = "over Kawata!"
-    token.pp = 69
+    token.actionID = actions.EDITING
+    token.actionText = "Visit https://c.ussr.pl for good luck!"
+    token.pp = 2137
     token.accuracy = 0.69
-    token.playcount = 69
-    token.totalScore = 1337
+    token.playcount = 2137
+    token.totalScore = 2137
     token.timeOffset = 0
     token.timezone = 24
     token.country = 2  # this is retared, fuck it im keeping it as europe, couldnt find the uk as its ordered stupidly
