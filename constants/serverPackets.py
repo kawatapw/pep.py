@@ -10,8 +10,8 @@ from constants import userRanks
 from constants.rosuprivs import BAT
 from constants.rosuprivs import DEV_SUPPORTER
 from constants.rosuprivs import DEVELOPER
-from constants.rosuprivs import MODERATOR
-from constants.rosuprivs import OWNER
+from constants.rosuprivs import MOD
+from constants.rosuprivs import FULL_PERMS
 from helpers import packetHelper
 from objects import glob
 
@@ -125,11 +125,11 @@ def user_presence(userID, force=False):
     userRank = 0
     if username == glob.BOT_NAME:
         userRank |= userRanks.ADMIN
-    elif userToken.privileges == OWNER:
+    elif userToken.privileges == FULL_PERMS:
         userRank |= userRanks.PEPPY
     elif userToken.privileges in (DEVELOPER, DEV_SUPPORTER):
         userRank |= userRanks.ADMIN
-    elif userToken.privileges == MODERATOR:
+    elif userToken.privileges == MOD:
         userRank |= userRanks.MOD
     elif userToken.privileges & privileges.USER_DONOR:
         userRank |= userRanks.SUPPORTER
