@@ -135,7 +135,7 @@ class UserToken:
     def restricted(self) -> bool:
         """Bool corresponding to the user's restricted status."""
 
-        return not self.privileges & privileges.USER_PUBLIC
+        return not self.privileges & privileges.PublicUser
 
     @property
     def admin(self) -> bool:
@@ -148,7 +148,7 @@ class UserToken:
     def banned(self) -> bool:
         """Bool corresponding to whether the user is banned from the server."""
 
-        return not self.privileges & privileges.USER_NORMAL
+        return not self.privileges & privileges.NormalUser
 
     @property
     def silenced(self) -> bool:

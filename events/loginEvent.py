@@ -22,6 +22,8 @@ from helpers.user_helper import set_country
 from helpers.user_helper import verify_password
 from logger import log
 from objects import glob
+from MySQLdb import OperationalError as MySQLOperationalError
+from constants import fokabotCommands
 
 
 def handle(tornadoRequest):
@@ -86,7 +88,7 @@ def handle(tornadoRequest):
             raise exceptions.loginFailedException()
 
         # Make sure we are not banned or locked
-        if (not priv & 3 > 0) and (not priv & privileges.USER_PENDING_VERIFICATION):
+        if (not priv & 3 > 0) and (not priv & privileges.PendingVerify):
             log.error(f"Login failed for user {username} (user is banned)!")
             raise exceptions.loginBannedException()
 
@@ -96,7 +98,7 @@ def handle(tornadoRequest):
         # Verify this user (if pending activation)
         firstLogin = False
         if (
-            priv & privileges.USER_PENDING_VERIFICATION
+            priv & privileges.PendingVerify
             or not userUtils.hasVerifiedHardware(userID)
         ):
             if userUtils.verifyUser(userID, clientData):
@@ -111,20 +113,24 @@ def handle(tornadoRequest):
                 raise exceptions.loginBannedException()
 
         # Save HWID in db for multiaccount detection
-        hwAllowed = userUtils.logHardware(
-            userID,
-            clientData,
-            firstLogin,
-        )  # THIS IS SO SLOW
+        # hwAllowed = userUtils.logHardware(
+        #     userID,
+        #     clientData,
+        #     firstLogin,
+        # )  # THIS IS SO SLOW
 
         # This is false only if HWID is empty
         # if HWID is banned, we get restricted so there's no
         # need to deny bancho access
-        if not hwAllowed:
-            raise exceptions.haxException()
+        # if not hwAllowed:
+        #     raise exceptions.haxException()
 
         # Log user IP
         userUtils.logIP(userID, requestIP)
+
+        # maple crack users beware
+        #if osuVersion.startswith("b2022"):
+        #    raise exceptions.forceUpdateException()
 
         # Log user osuver
         glob.db.execute(
@@ -147,8 +153,8 @@ def handle(tornadoRequest):
 
         # Check restricted mode (and eventually send message)
         # Cache this for less db queries
-        user_restricted = (priv & privileges.USER_NORMAL) and not (
-            priv & privileges.USER_PUBLIC
+        user_restricted = (priv & privileges.NormalUser) and not (
+            priv & privileges.PublicUser
         )
 
         if user_restricted:
@@ -156,7 +162,7 @@ def handle(tornadoRequest):
         # responseToken.checkRestricted()
 
         # Send message if donor expires soon
-        if responseToken.privileges & privileges.USER_DONOR:
+        if responseToken.privileges & privileges.Donor:
             if donor_expire - int(time.time()) <= 86400 * 3:
                 expireDays = round((donor_expire - int(time.time())) / 86400)
                 expireIn = (
@@ -179,7 +185,7 @@ def handle(tornadoRequest):
         userTournament = False
         userGMT = responseToken.admin
         userTournament = bool(
-            responseToken.privileges & privileges.USER_TOURNAMENT_STAFF,
+            responseToken.privileges & privileges.TournamentStaff,
         )
 
         # Server restarting check
@@ -329,6 +335,7 @@ def handle(tornadoRequest):
             "The server has experienced an error while logging you "
             "in! Please notify the developers for help.",
         )
+        fokabotCommands.restartShutdown(True)
     finally:
         # Console and discord log
         if len(loginData) < 3:

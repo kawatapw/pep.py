@@ -126,7 +126,7 @@ def restrict_with_log(
     """
 
     glob.db.execute(
-        f"UPDATE users SET privileges = privileges & ~{privileges.USER_PUBLIC}, "
+        f"UPDATE users SET privileges = privileges & ~{privileges.PublicUser}, "
         "ban_datetime = UNIX_TIMESTAMP() WHERE id = %s LIMIT 1",
         (user_id,),
     )

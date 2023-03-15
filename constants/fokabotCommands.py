@@ -70,7 +70,7 @@ def refresh_bmap(md5: str) -> None:
 
 def calc_completion(bmapid, n300, n100, n50, miss):
     bmap = osupyparser.OsuFile(
-        f"/home/realistikosu/ussr/.data/maps/{bmapid}.osu", # me when the when
+        f"/home/kawata/USSR/.data/maps/{bmapid}.osu", # me when the when
     ).parse_file()
 
     total_hits = int(n300 + n100 + n50 + miss)
@@ -231,7 +231,7 @@ TODO: Change False to None, because False doesn't make any sense
 
 @registerCommand(
     trigger="!map",
-    privs=privileges.ADMIN_MANAGE_BEATMAPS,
+    privs=privileges.ManageBeatmaps,
     syntax="<rank/love/unrank> <set/map>",
 )
 def editMap(fro: str, chan: str, message: list[str]) -> str:
@@ -291,11 +291,11 @@ def editMap(fro: str, chan: str, message: list[str]) -> str:
 
     if set_check:  # In theory it should work, practically i have no fucking clue.
         map_name = res["song_name"].split("[")[0].strip()
-        beatmap_url = f"the beatmap set [https://kawata.pw/beatmaps/{token.tillerino[0]} {map_name}]"
+        beatmap_url = f"the beatmap set [https://kawata.pw/b/{token.tillerino[0]} {map_name}]"
     else:
         map_name = res["song_name"]
         beatmap_url = (
-            f"the beatmap [https://kawata.pw/beatmaps/{token.tillerino[0]} {map_name}]"
+            f"the beatmap [https://kawata.pw/b/{token.tillerino[0]} {map_name}]"
         )
 
     if conf.NEW_RANKED_WEBHOOK:
@@ -303,7 +303,7 @@ def editMap(fro: str, chan: str, message: list[str]) -> str:
         embed = DiscordEmbed(description=f"Ranked by {fro}", color=242424)
         embed.set_author(
             name=f"{map_name} was just {status_readable}",
-            url=f"https://kawata.pw/beatmaps/{token.tillerino[0]}",
+            url=f"https://kawata.pw/b/{token.tillerino[0]}",
             icon_url=f"https://a.kawata.pw/{token.userID}",
         )
         embed.set_footer(text="via RealistikPanel!")
@@ -321,7 +321,7 @@ def editMap(fro: str, chan: str, message: list[str]) -> str:
     return f"Successfully {status_readable} a map."
 
 
-@registerCommand(trigger="!ir", privs=privileges.ADMIN_MANAGE_SERVERS)
+@registerCommand(trigger="!ir", privs=privileges.ManageServers)
 def instantRestart(fro, chan, message):
     """Reloads pep.py instantly."""
     glob.streams.broadcast(
@@ -347,7 +347,7 @@ def roll(fro, chan, message):
 @registerCommand(
     trigger="!alert",
     syntax="<message>",
-    privs=privileges.ADMIN_SEND_ALERTS,
+    privs=privileges.SendAlerts,
 )
 def alert(fro, chan, message):
     """Sends a notification to all currently online members."""
@@ -361,7 +361,7 @@ def alert(fro, chan, message):
 @registerCommand(
     trigger="!alertuser",
     syntax="<username> <message>",
-    privs=privileges.ADMIN_SEND_ALERTS,
+    privs=privileges.SendAlerts,
 )
 def alertUser(fro, chan, message):
     """Sends a notification to a specific user."""
@@ -378,7 +378,7 @@ def alertUser(fro, chan, message):
         return "User offline."
 
 
-@registerCommand(trigger="!moderated", privs=privileges.ADMIN_CHAT_MOD)
+@registerCommand(trigger="!moderated", privs=privileges.ChatMod)
 def moderated(fro, chan, message):
     try:
         # Make sure we are in a channel and not PM
@@ -400,7 +400,7 @@ def moderated(fro, chan, message):
         return "You are trying to put a private chat in moderated mode. Are you serious?!? You're fired."
 
 
-@registerCommand(trigger="!kickall", privs=privileges.ADMIN_MANAGE_SERVERS)
+@registerCommand(trigger="!kickall", privs=privileges.ManageServers)
 def kickAll(fro, chan, message):
     """Kicks all members from the server (except staff)."""
     # Kick everyone but mods/admins
@@ -418,7 +418,7 @@ def kickAll(fro, chan, message):
     return "Whoops! Who needs players anyways?"
 
 
-@registerCommand(trigger="!kick", syntax="<target>", privs=privileges.ADMIN_KICK_USERS)
+@registerCommand(trigger="!kick", syntax="<target>", privs=privileges.KickUsers)
 def kick(fro, chan, message):
     """Kicks a specific member from the server."""
     # Get parameters
@@ -443,7 +443,7 @@ def kick(fro, chan, message):
     return f"{target} has been kicked from the server."
 
 
-@registerCommand(trigger="!bot reconnect", privs=privileges.ADMIN_MANAGE_SERVERS)
+@registerCommand(trigger="!bot reconnect", privs=privileges.ManageServers)
 def fokabotReconnect(fro, chan, message):
     """Forces the bot to reconnect."""
     # Check if the bot is already connected
@@ -455,7 +455,7 @@ def fokabotReconnect(fro, chan, message):
     return False
 
 
-@registerCommand(trigger="!bot reload", privs=privileges.ADMIN_MANAGE_SERVERS)
+@registerCommand(trigger="!bot reload", privs=privileges.ManageServers)
 def reload_commands(fro, chan, mes) -> str:
     """Reloads all of the FokaBot commands."""
 
@@ -466,7 +466,7 @@ def reload_commands(fro, chan, mes) -> str:
 @registerCommand(
     trigger="!silence",
     syntax="<target> <amount> <unit(s/m/h/d)> <reason>",
-    privs=privileges.ADMIN_SILENCE_USERS,
+    privs=privileges.SilenceUsers,
 )
 def silence(fro, chan, message):
     """Silences a specific user for a specific interval."""
@@ -528,7 +528,7 @@ def silence(fro, chan, message):
 @registerCommand(
     trigger="!removesilence",
     syntax="<target>",
-    privs=privileges.ADMIN_SILENCE_USERS,
+    privs=privileges.SilenceUsers,
 )
 def removeSilence(fro, chan, message):
     """Unsilences a specific user."""
@@ -552,7 +552,7 @@ def removeSilence(fro, chan, message):
     return f"{target}'s silence reset"
 
 
-@registerCommand(trigger="!ban", syntax="<target>", privs=privileges.ADMIN_BAN_USERS)
+@registerCommand(trigger="!ban", syntax="<target>", privs=privileges.BanUsers)
 def ban(fro, chan, message):
     """Bans a specific user."""
     # Get parameters
@@ -577,7 +577,7 @@ def ban(fro, chan, message):
     return f"RIP {target}. You will not be missed."
 
 
-@registerCommand(trigger="!unban", syntax="<target>", privs=privileges.ADMIN_BAN_USERS)
+@registerCommand(trigger="!unban", syntax="<target>", privs=privileges.BanUsers)
 def unban(fro, chan, message):
     """Unans a specific user."""
     # Get parameters
@@ -599,7 +599,7 @@ def unban(fro, chan, message):
 @registerCommand(
     trigger="!restrict",
     syntax="<target>",
-    privs=privileges.ADMIN_BAN_USERS,
+    privs=privileges.BanUsers,
 )
 def restrict(fro, chan, message):
     """Restricts a specific user."""
@@ -628,7 +628,7 @@ def restrict(fro, chan, message):
 @registerCommand(
     trigger="!username",
     syntax="<new username>",
-    privs=privileges.USER_DONOR,
+    privs=privileges.Donor,
 )
 def changeUsername(fro, chan, message):
     """Lets you change your username."""
@@ -664,7 +664,7 @@ def changeUsername(fro, chan, message):
 @registerCommand(
     trigger="!unrestrict",
     syntax="<target>",
-    privs=privileges.ADMIN_BAN_USERS,
+    privs=privileges.BanUsers,
 )
 def unrestrict(fro, chan, message):
     """Unrestricts a specific user."""
@@ -683,23 +683,23 @@ def unrestrict(fro, chan, message):
     return f"Welcome back {target}!"
 
 
-@registerCommand(trigger="!system restart", privs=privileges.ADMIN_MANAGE_SERVERS)
+@registerCommand(trigger="!system restart", privs=privileges.ManageServers)
 def systemRestart(fro, chan, message):
     return restartShutdown(True)
 
 
-@registerCommand(trigger="!system shutdown", privs=privileges.ADMIN_MANAGE_SERVERS)
+@registerCommand(trigger="!system shutdown", privs=privileges.ManageServers)
 def systemShutdown(fro, chan, message):
     return restartShutdown(False)
 
 
-@registerCommand(trigger="!system reload", privs=privileges.ADMIN_MANAGE_SERVERS)
+@registerCommand(trigger="!system reload", privs=privileges.ManageServers)
 def systemReload(fro, chan, message):
     glob.banchoConf.reload()
     return "Bancho settings reloaded!"
 
 
-@registerCommand(trigger="!system maintenance", privs=privileges.ADMIN_MANAGE_SERVERS)
+@registerCommand(trigger="!system maintenance", privs=privileges.ManageServers)
 def systemMaintenance(fro, chan, message):
     # Turn on/off bancho maintenance
     maintenance = True
@@ -740,7 +740,7 @@ def systemMaintenance(fro, chan, message):
     return msg
 
 
-@registerCommand(trigger="!system status", privs=privileges.ADMIN_MANAGE_SERVERS)
+@registerCommand(trigger="!system status", privs=privileges.ManageServers)
 def systemStatus(fro, chan, message):
     """Shows the current server status."""
     # Fetch
@@ -750,7 +750,7 @@ def systemStatus(fro, chan, message):
         (
             "---> Kawata <---",
             " - Realtime Server -",
-            "> Running  pep.py fork.",
+            "> Running RealistikOSU!'s pep.py fork.",
             f"> Online Users: {data['connectedUsers']}",
             f"> Multiplayer: {data['matches']}",
             f"> Uptime: {data['uptime']}",
@@ -758,7 +758,7 @@ def systemStatus(fro, chan, message):
             " - System Statistics -",
             f"> CPU Utilisation: {data['cpuUsage']}%",
             f"> RAM Utilisation: {data['usedMemory']}/{data['totalMemory']}",
-            f"> CPU Utilisation History: {'%, '.join(data['loadAverage'])}",
+            #f"> CPU Utilisation History: {'%, '.join(data['loadAverage'])}",
         ),
     )
 
@@ -923,20 +923,21 @@ def tillerinoLast(fro, chan, message):
     token = glob.tokens.getTokenFromUsername(fro)
     if token is None:
         return False
-
-    table = (
-        ("scores_ap" if token.autopiloting else "scores_relax")
-        if token.relaxing
-        else "scores"
-    )
+    if token.relaxing:
+        isrx = 1
+    else: 
+        isrx = 0
+    # kept this var for compat & cuz we might want to migrate to tables later
+    table = "scores"
 
     data = glob.db.fetch(
         """SELECT beatmaps.song_name as sn, {t}.*,
 		beatmaps.beatmap_id as bid, beatmaps.max_combo as fc
 		FROM {t} LEFT JOIN beatmaps ON beatmaps.beatmap_md5={t}.beatmap_md5
-		LEFT JOIN users ON users.id = {t}.userid WHERE users.id = %s
+		LEFT JOIN users ON users.id = {t}.userid WHERE users.id = %s AND {t}.is_relax = {rx}
 		ORDER BY {t}.id DESC LIMIT 1""".format(
             t=table,
+            rx=isrx,
         ),
         [token.userID],
     )
@@ -972,7 +973,7 @@ def tillerinoLast(fro, chan, message):
     oppaiData = getPPMessage(token.userID, just_data=True)
 
     user_embed = f"[https://kawata.pw/u/{token.userID} {fro}]"
-    map_embed = f"[http://kawata.pw/beatmaps/{data['bid']} {data['sn']}]"
+    map_embed = f"[http://kawata.pw/b/{data['bid']} {data['sn']}]"
 
     response = [
         f"{user_embed} | {map_embed} +{generalUtils.readableMods(data['mods'])}",
@@ -1101,7 +1102,7 @@ def report(fro, chan, message):
 @registerCommand(
     trigger="!mp",
     syntax="<subcommand>",
-    privs=privileges.USER_TOURNAMENT_STAFF,
+    privs=privileges.TournamentStaff,
 )
 def multiplayer(fro, chan, message):
     """All the multiplayer subcommands."""
@@ -1571,7 +1572,7 @@ def multiplayer(fro, chan, message):
 @registerCommand(
     trigger="!switchserver",
     syntax="<server_url>",
-    privs=privileges.ADMIN_MANAGE_SERVERS,
+    privs=privileges.ManageServers,
 )
 def switchServer(fro, chan, message):
 
@@ -1597,7 +1598,7 @@ def switchServer(fro, chan, message):
 @registerCommand(
     trigger="!announce",
     syntax="<announcement>",
-    privs=privileges.ADMIN_SEND_ALERTS,
+    privs=privileges.SendAlerts,
 )
 def postAnnouncement(fro, chan, message):  # Post to #announce ingame
 
@@ -1698,7 +1699,7 @@ def mirror(fro, chan, message):
 @registerCommand(
     trigger="!crash",
     syntax="<target>",
-    privs=privileges.ADMIN_MANAGE_USERS,
+    privs=privileges.ManageUsers,
 )
 def crashuser(fro, chan, message):
     """Crashes the persons game lmfao"""
@@ -1716,7 +1717,7 @@ def crashuser(fro, chan, message):
 @registerCommand(
     trigger="!bless",
     syntax="<target>",
-    privs=privileges.ADMIN_MANAGE_USERS,
+    privs=privileges.ManageUsers,
 )
 def bless(fro: str, chan: str, message: str) -> str:
     """Blesses them with the holy texts, and then proceeds to crash their game
@@ -1765,7 +1766,7 @@ ASCII_TROLL = (
 @registerCommand(
     trigger="!troll",
     syntax="<target>",
-    privs=privileges.ADMIN_MANAGE_USERS,
+    privs=privileges.ManageUsers,
 )
 def troll(fro: str, chan: str, message: str) -> str:
     """We do little bit of trolling :tf:"""
@@ -1789,7 +1790,7 @@ def troll(fro: str, chan: str, message: str) -> str:
 @registerCommand(
     trigger="!msg",
     syntax="<target> <message>",
-    privs=privileges.ADMIN_MANAGE_USERS,
+    privs=privileges.ManageUsers,
 )
 def messageuser(fro: str, chan: str, message: str) -> str:
     """Send a message from FokaBot."""
@@ -1805,35 +1806,35 @@ def messageuser(fro: str, chan: str, message: str) -> str:
 
     return f"Messaged {t_user.username}."
 
-@registerCommand(trigger="!py", syntax="<code>", privs=privileges.ADMIN_MANAGE_USERS)
-def py(fro: str, chan: str, message: str) -> str:
-    """Allows for code execution inside server (DANGEROUS COMMAND)"""
-
-    user = glob.tokens.getTokenFromUsername(username_safe(fro), safe=True)
-    if not user.userID in (2, 1000):
-        return "This command is reserved for head developers only!"
-
-    if not message[0]:
-        return "owo"
-
-    definition = "\n ".join([f"def __py_{user.userID}():", " ".join(message)])
-
-    try:  # def __py()
-        exec(definition, glob.namespace)  # add to namespace
-        ret = glob.namespace[f"__py_{user.userID}"]()
-    except Exception as exc:  # return exception in osu! chat
-        ret = pprint.pformat(f"{exc.__class__}: {exc}", compact=True)
-
-    if f"__py_{user.userID}" in glob.namespace:
-        del glob.namespace[f"__py_{user.userID}"]
-
-    if ret is None:
-        return "Success"
-
-    if not isinstance(ret, str):
-        ret = pprint.pformat(ret, compact=True)
-
-    return ret
+#@registerCommand(trigger="!py", syntax="<code>", privs=privileges.IsBot)
+#def py(fro: str, chan: str, message: str) -> str:
+#    """Allows for code execution inside server (DANGEROUS COMMAND)"""
+#
+#    user = glob.tokens.getTokenFromUsername(username_safe(fro), safe=True)
+#    if not user.userID in (420, 1000):
+#        return "This command is reserved for head developers only!"
+#
+#    if not message[0]:
+#        return "owo"
+#
+#    definition = "\n ".join([f"def __py_{user.userID}():", " ".join(message)])
+#
+#    try:  # def __py()
+#        exec(definition, glob.namespace)  # add to namespace
+#        ret = glob.namespace[f"__py_{user.userID}"]()
+#    except Exception as exc:  # return exception in osu! chat
+#        ret = pprint.pformat(f"{exc.__class__}: {exc}", compact=True)
+#
+#    if f"__py_{user.userID}" in glob.namespace:
+#        del glob.namespace[f"__py_{user.userID}"]
+#
+#    if ret is None:
+#        return "Success"
+#
+#    if not isinstance(ret, str):
+#        ret = pprint.pformat(ret, compact=True)
+#
+#    return ret
 
 
 CMD_PER_PAGE = 5
