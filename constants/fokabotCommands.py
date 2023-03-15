@@ -231,7 +231,7 @@ TODO: Change False to None, because False doesn't make any sense
 
 @registerCommand(
     trigger="!map",
-    privs=privileges.ManageBeatmaps,
+    privs=privileges.ADMIN_MANAGE_BEATMAPS,
     syntax="<rank/love/unrank> <set/map>",
 )
 def editMap(fro: str, chan: str, message: list[str]) -> str:
@@ -321,7 +321,7 @@ def editMap(fro: str, chan: str, message: list[str]) -> str:
     return f"Successfully {status_readable} a map."
 
 
-@registerCommand(trigger="!ir", privs=privileges.ManageServers)
+@registerCommand(trigger="!ir", privs=privileges.ADMIN_MANAGE_SERVERS)
 def instantRestart(fro, chan, message):
     """Reloads pep.py instantly."""
     glob.streams.broadcast(
@@ -347,7 +347,7 @@ def roll(fro, chan, message):
 @registerCommand(
     trigger="!alert",
     syntax="<message>",
-    privs=privileges.SendAlerts,
+    privs=privileges.ADMIN_SEND_ALERTS,
 )
 def alert(fro, chan, message):
     """Sends a notification to all currently online members."""
@@ -361,7 +361,7 @@ def alert(fro, chan, message):
 @registerCommand(
     trigger="!alertuser",
     syntax="<username> <message>",
-    privs=privileges.SendAlerts,
+    privs=privileges.ADMIN_SEND_ALERTS,
 )
 def alertUser(fro, chan, message):
     """Sends a notification to a specific user."""
@@ -378,7 +378,7 @@ def alertUser(fro, chan, message):
         return "User offline."
 
 
-@registerCommand(trigger="!moderated", privs=privileges.ChatMod)
+@registerCommand(trigger="!moderated", privs=privileges.ADMIN_CHAT_MOD)
 def moderated(fro, chan, message):
     try:
         # Make sure we are in a channel and not PM
@@ -400,7 +400,7 @@ def moderated(fro, chan, message):
         return "You are trying to put a private chat in moderated mode. Are you serious?!? You're fired."
 
 
-@registerCommand(trigger="!kickall", privs=privileges.ManageServers)
+@registerCommand(trigger="!kickall", privs=privileges.ADMIN_MANAGE_SERVERS)
 def kickAll(fro, chan, message):
     """Kicks all members from the server (except staff)."""
     # Kick everyone but mods/admins
@@ -418,7 +418,7 @@ def kickAll(fro, chan, message):
     return "Whoops! Who needs players anyways?"
 
 
-@registerCommand(trigger="!kick", syntax="<target>", privs=privileges.KickUsers)
+@registerCommand(trigger="!kick", syntax="<target>", privs=privileges.ADMIN_KICK_USERS)
 def kick(fro, chan, message):
     """Kicks a specific member from the server."""
     # Get parameters
@@ -443,7 +443,7 @@ def kick(fro, chan, message):
     return f"{target} has been kicked from the server."
 
 
-@registerCommand(trigger="!bot reconnect", privs=privileges.ManageServers)
+@registerCommand(trigger="!bot reconnect", privs=privileges.ADMIN_MANAGE_SERVERS)
 def fokabotReconnect(fro, chan, message):
     """Forces the bot to reconnect."""
     # Check if the bot is already connected
@@ -455,7 +455,7 @@ def fokabotReconnect(fro, chan, message):
     return False
 
 
-@registerCommand(trigger="!bot reload", privs=privileges.ManageServers)
+@registerCommand(trigger="!bot reload", privs=privileges.ADMIN_MANAGE_SERVERS)
 def reload_commands(fro, chan, mes) -> str:
     """Reloads all of the FokaBot commands."""
 
@@ -466,7 +466,7 @@ def reload_commands(fro, chan, mes) -> str:
 @registerCommand(
     trigger="!silence",
     syntax="<target> <amount> <unit(s/m/h/d)> <reason>",
-    privs=privileges.SilenceUsers,
+    privs=privileges.ADMIN_SILENCE_USERS,
 )
 def silence(fro, chan, message):
     """Silences a specific user for a specific interval."""
@@ -528,7 +528,7 @@ def silence(fro, chan, message):
 @registerCommand(
     trigger="!removesilence",
     syntax="<target>",
-    privs=privileges.SilenceUsers,
+    privs=privileges.ADMIN_SILENCE_USERS,
 )
 def removeSilence(fro, chan, message):
     """Unsilences a specific user."""
@@ -552,7 +552,7 @@ def removeSilence(fro, chan, message):
     return f"{target}'s silence reset"
 
 
-@registerCommand(trigger="!ban", syntax="<target>", privs=privileges.BanUsers)
+@registerCommand(trigger="!ban", syntax="<target>", privs=privileges.ADMIN_BAN_USERS)
 def ban(fro, chan, message):
     """Bans a specific user."""
     # Get parameters
@@ -577,7 +577,7 @@ def ban(fro, chan, message):
     return f"RIP {target}. You will not be missed."
 
 
-@registerCommand(trigger="!unban", syntax="<target>", privs=privileges.BanUsers)
+@registerCommand(trigger="!unban", syntax="<target>", privs=privileges.ADMIN_BAN_USERS)
 def unban(fro, chan, message):
     """Unans a specific user."""
     # Get parameters
@@ -599,7 +599,7 @@ def unban(fro, chan, message):
 @registerCommand(
     trigger="!restrict",
     syntax="<target>",
-    privs=privileges.BanUsers,
+    privs=privileges.ADMIN_BAN_USERS,
 )
 def restrict(fro, chan, message):
     """Restricts a specific user."""
@@ -628,7 +628,7 @@ def restrict(fro, chan, message):
 @registerCommand(
     trigger="!username",
     syntax="<new username>",
-    privs=privileges.Donor,
+    privs=privileges.USER_DONOR,
 )
 def changeUsername(fro, chan, message):
     """Lets you change your username."""
@@ -664,7 +664,7 @@ def changeUsername(fro, chan, message):
 @registerCommand(
     trigger="!unrestrict",
     syntax="<target>",
-    privs=privileges.BanUsers,
+    privs=privileges.ADMIN_BAN_USERS,
 )
 def unrestrict(fro, chan, message):
     """Unrestricts a specific user."""
@@ -683,23 +683,23 @@ def unrestrict(fro, chan, message):
     return f"Welcome back {target}!"
 
 
-@registerCommand(trigger="!system restart", privs=privileges.ManageServers)
+@registerCommand(trigger="!system restart", privs=privileges.ADMIN_MANAGE_SERVERS)
 def systemRestart(fro, chan, message):
     return restartShutdown(True)
 
 
-@registerCommand(trigger="!system shutdown", privs=privileges.ManageServers)
+@registerCommand(trigger="!system shutdown", privs=privileges.ADMIN_MANAGE_SERVERS)
 def systemShutdown(fro, chan, message):
     return restartShutdown(False)
 
 
-@registerCommand(trigger="!system reload", privs=privileges.ManageServers)
+@registerCommand(trigger="!system reload", privs=privileges.ADMIN_MANAGE_SERVERS)
 def systemReload(fro, chan, message):
     glob.banchoConf.reload()
     return "Bancho settings reloaded!"
 
 
-@registerCommand(trigger="!system maintenance", privs=privileges.ManageServers)
+@registerCommand(trigger="!system maintenance", privs=privileges.ADMIN_MANAGE_SERVERS)
 def systemMaintenance(fro, chan, message):
     # Turn on/off bancho maintenance
     maintenance = True
@@ -740,7 +740,7 @@ def systemMaintenance(fro, chan, message):
     return msg
 
 
-@registerCommand(trigger="!system status", privs=privileges.ManageServers)
+@registerCommand(trigger="!system status", privs=privileges.ADMIN_MANAGE_SERVERS)
 def systemStatus(fro, chan, message):
     """Shows the current server status."""
     # Fetch
@@ -1102,7 +1102,7 @@ def report(fro, chan, message):
 @registerCommand(
     trigger="!mp",
     syntax="<subcommand>",
-    privs=privileges.TournamentStaff,
+    privs=privileges.USER_TOURNAMENT_STAFF,
 )
 def multiplayer(fro, chan, message):
     """All the multiplayer subcommands."""
@@ -1572,7 +1572,7 @@ def multiplayer(fro, chan, message):
 @registerCommand(
     trigger="!switchserver",
     syntax="<server_url>",
-    privs=privileges.ManageServers,
+    privs=privileges.ADMIN_MANAGE_SERVERS,
 )
 def switchServer(fro, chan, message):
 
@@ -1598,7 +1598,7 @@ def switchServer(fro, chan, message):
 @registerCommand(
     trigger="!announce",
     syntax="<announcement>",
-    privs=privileges.SendAlerts,
+    privs=privileges.ADMIN_SEND_ALERTS,
 )
 def postAnnouncement(fro, chan, message):  # Post to #announce ingame
 
@@ -1699,7 +1699,7 @@ def mirror(fro, chan, message):
 @registerCommand(
     trigger="!crash",
     syntax="<target>",
-    privs=privileges.ManageUsers,
+    privs=privileges.ADMIN_MANAGE_USERS,
 )
 def crashuser(fro, chan, message):
     """Crashes the persons game lmfao"""
@@ -1717,7 +1717,7 @@ def crashuser(fro, chan, message):
 @registerCommand(
     trigger="!bless",
     syntax="<target>",
-    privs=privileges.ManageUsers,
+    privs=privileges.ADMIN_MANAGE_USERS,
 )
 def bless(fro: str, chan: str, message: str) -> str:
     """Blesses them with the holy texts, and then proceeds to crash their game
@@ -1766,7 +1766,7 @@ ASCII_TROLL = (
 @registerCommand(
     trigger="!troll",
     syntax="<target>",
-    privs=privileges.ManageUsers,
+    privs=privileges.ADMIN_MANAGE_USERS,
 )
 def troll(fro: str, chan: str, message: str) -> str:
     """We do little bit of trolling :tf:"""
@@ -1790,7 +1790,7 @@ def troll(fro: str, chan: str, message: str) -> str:
 @registerCommand(
     trigger="!msg",
     syntax="<target> <message>",
-    privs=privileges.ManageUsers,
+    privs=privileges.ADMIN_MANAGE_USERS,
 )
 def messageuser(fro: str, chan: str, message: str) -> str:
     """Send a message from FokaBot."""

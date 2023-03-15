@@ -98,7 +98,7 @@ def handle(tornadoRequest):
         # Verify this user (if pending activation)
         firstLogin = False
         if (
-            priv & privileges.PendingVerify
+            priv & privileges.USER_PENDING_VERIFICATION
             or not userUtils.hasVerifiedHardware(userID)
         ):
             if userUtils.verifyUser(userID, clientData):
@@ -153,8 +153,8 @@ def handle(tornadoRequest):
 
         # Check restricted mode (and eventually send message)
         # Cache this for less db queries
-        user_restricted = (priv & privileges.NormalUser) and not (
-            priv & privileges.PublicUser
+        user_restricted = (priv & privileges.USER_NORMAL) and not (
+            priv & privileges.USER_PUBLIC
         )
 
         if user_restricted:
@@ -162,7 +162,7 @@ def handle(tornadoRequest):
         # responseToken.checkRestricted()
 
         # Send message if donor expires soon
-        if responseToken.privileges & privileges.Donor:
+        if responseToken.privileges & privileges.USER_DONOR:
             if donor_expire - int(time.time()) <= 86400 * 3:
                 expireDays = round((donor_expire - int(time.time())) / 86400)
                 expireIn = (
@@ -185,7 +185,7 @@ def handle(tornadoRequest):
         userTournament = False
         userGMT = responseToken.admin
         userTournament = bool(
-            responseToken.privileges & privileges.TournamentStaff,
+            responseToken.privileges & privileges.USER_TOURNAMENT_STAFF,
         )
 
         # Server restarting check

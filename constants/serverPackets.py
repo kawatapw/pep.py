@@ -141,7 +141,7 @@ def user_presence(userID, force=False):
         userRank |= userRanks.ADMIN
     elif userToken.privileges == MOD:
         userRank |= userRanks.MOD
-    elif userToken.privileges & privileges.Donor:
+    elif userToken.privileges & privileges.USER_DONOR:
         userRank |= userRanks.SUPPORTER
     else:
         userRank |= userRanks.NORMAL
