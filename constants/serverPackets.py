@@ -92,6 +92,16 @@ def friend_list(userID):
         ((friends, dataTypes.INT_LIST),),
     )
 
+def onlineUsers():
+	userIDs = []
+	users = glob.tokens.tokens
+
+	# Create list with all connected (and not restricted) users
+	for _, value in users.items():
+		if not value.restricted:
+			userIDs.append(value.userID)
+
+	return packetHelper.buildPacket(packetIDs.server_userPresenceBundle, [[userIDs, dataTypes.INT_LIST]])
 
 """ Users packets """
 
@@ -131,7 +141,7 @@ def user_presence(userID, force=False):
         userRank |= userRanks.ADMIN
     elif userToken.privileges == MOD:
         userRank |= userRanks.MOD
-    elif userToken.privileges & privileges.USER_DONOR:
+    elif userToken.privileges & privileges.Donor:
         userRank |= userRanks.SUPPORTER
     else:
         userRank |= userRanks.NORMAL
@@ -176,6 +186,8 @@ def user_stats(userID):
         ),
     )
 
+def kill():
+	return packetHelper.buildPacket(packetIDs.client_BanchoPing, [[0, dataTypes.BYTE]])
 
 """ Chat packets """
 
@@ -386,6 +398,8 @@ def match_player_fail(slotID):
 def match_new_host_notify():
     return b"2\x00\x00\x00\x00\x00\x00"
 
+def matchTransferHost():
+	return packetHelper.buildPacket(packetIDs.server_matchTransferHost)
 
 def match_abort():
     return b"j\x00\x00\x00\x00\x00\x00"
@@ -414,11 +428,56 @@ def server_restart(msUntilReconnection):
         ((msUntilReconnection, dataTypes.UINT32),),
     )
 
+def banchoRestart(msUntilReconnection):
+	return packetHelper.buildPacket(packetIDs.server_restart, [[msUntilReconnection, dataTypes.UINT32]])
 
 def rtx(message):
-    return packetHelper.buildPacket(0x69, ((message, dataTypes.STRING),))
+    return packetHelper.buildPacket(packetIDs.client_RTX, ((message, dataTypes.STRING),))
 
 
 def crash():
     # return buildPacket(packetIDs.server_supporterGMT, ((128, dataTypes.UINT32))) + buildPacket(packetIDs.server_ping)
     return b"G\x00\x00\x04\x00\x00\x00\x80\x00\x00\x00\x08\x00\x00\x00\x00\x00\x00"
+
+def groupJoin():
+	return packetHelper.buildPacket(packetIDs.server_groupJoin)
+
+def groupLeave():
+	return packetHelper.buildPacket(packetIDs.server_groupLeave)
+
+def groupUsers(user):
+	group = glob.groups.getGroupFromUser(user)
+	groupUsers = []
+	for user in group.members:
+		lead = 1 if user.userID == group.lead.userID else 0
+
+		groupUsers.append({
+			"Name": user.username,
+			"ID" : str(user.userID),
+			"Lead": str(lead)
+		})
+	return packetHelper.buildPacket(packetIDs.server_groupUsers, [[json.dumps(groupUsers, indent=5), dataTypes.STRING]])
+
+def groupInvites(user):
+	invites = glob.groups.pendingUsers.get(user.token)
+	if invites is None:
+		return bytes()
+	response = []
+	index = 0
+	for invite in invites:
+		response.append([
+			[invite.lead.username, dataTypes.STRING],
+			[index, dataTypes.UINT16]
+		])
+	return packetHelper.buildPacket(packetIDs.client_groupSeeInvites, response)
+
+def groupInvite(leadID):
+	username = userUtils.getUsername(leadID)
+	invite = {
+		"From":username,
+		"ID":leadID
+	}
+	return packetHelper.buildPacket(packetIDs.server_groupInvite, [[json.dumps(invite, indent=5), dataTypes.STRING]])
+
+def serverIdentification(version):
+	return packetHelper.buildPacket(packetIDs.server_identify, [[version, dataTypes.UINT16]])

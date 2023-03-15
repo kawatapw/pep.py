@@ -203,3 +203,6 @@ def tournamentJoinMatchChannel(stream):
 
 def tournamentLeaveMatchChannel(stream):
     return packetHelper.readPacketData(stream, [["matchID", dataTypes.UINT32]])
+
+def osuIdentification(stream):
+	return packetHelper.readPacketData(stream, [["AerisVersion", dataTypes.UINT32]])

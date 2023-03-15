@@ -82,7 +82,29 @@ server_userSilenced = 94
 server_userPresenceBundle = 96
 client_userPanelRequest = 97
 client_tournamentMatchInfoRequest = 93
+client_RTX = 105
 server_matchAbort = 106
 server_switchServer = 107
 client_tournamentJoinMatchChannel = 108
 client_tournamentLeaveMatchChannel = 109
+
+client_createGroup = 110
+client_disbandGroup = 111
+client_groupInvite = 112
+client_groupAccept = 113
+client_groupDeny = 114
+client_groupSeeInvites = 115
+client_groupUsers = 116
+client_groupLeave = 117
+client_groupKick = 118
+client_delegate = 119
+client_createGroupMatch = 120
+client_dismountGroupMatch = 121
+
+server_groupJoin = 122
+server_groupLeave = 123
+server_groupInvite = 124
+server_groupUsers = 125
+
+client_identify = 126
+server_identify = 127
