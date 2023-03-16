@@ -88,7 +88,7 @@ def handle(tornadoRequest):
             raise exceptions.loginFailedException()
 
         # Make sure we are not banned or locked
-        if (not priv & 3 > 0) and (not priv & privileges.PendingVerify):
+        if (not priv & 3 > 0) and (not priv & privileges.USER_PENDING_VERIFICATION):
             log.error(f"Login failed for user {username} (user is banned)!")
             raise exceptions.loginBannedException()
 
